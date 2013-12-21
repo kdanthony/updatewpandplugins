@@ -59,18 +59,18 @@ echo "==========================================================================
 
 if [ -d ${BASEDIR}/downloads ]; then
     echo "* Cleaning existing download directory"
-    rm -rf ${BASEDIR}/downloads/*
+    rm -rf "${BASEDIR}/downloads/*"
 else
     echo "* No download directory exists, creating it"
-    mkdir ${BASEDIR}/downloads
+    mkdir "${BASEDIR}/downloads"
 fi
 
 if [ -d ${BASEDIR}/unpack ]; then
     echo "* Cleaning existing unpack directory"
-    rm -rf ${BASEDIR}/unpack/*
+    rm -rf "${BASEDIR}/unpack/*"
 else
     echo "* No unpack directory exists, creating it"
-    mkdir ${BASEDIR}/unpack
+    mkdir "${BASEDIR}/unpack"
 fi
 
 echo "==============================================================================="
@@ -78,7 +78,7 @@ echo "* Downloading Wordpress";
 curl --progress-bar ${WPURL} -o ${BASEDIR}/downloads/wordpress.zip
 echo "* Downloading Plugins";
 
-cd ${BASEDIR}/downloads/
+cd "${BASEDIR}/downloads/"
 
 for PLUGINNAME in `find ${SITEDIR}/wp-content/plugins/ -mindepth 1 -maxdepth 1 -xtype d | sed -e 's/.*plugins\///g'`; do
     echo ${PLUGINNAME}
@@ -90,31 +90,31 @@ done
 #    curl --progress-bar -O ${pluginurl}
 #done < ${BASEDIR}/plugins.txt
 
-mkdir ${BASEDIR}/unpack/plugins
-mkdir ${BASEDIR}/unpack/wordpress
+mkdir "${BASEDIR}/unpack/plugins"
+mkdir "${BASEDIR}/unpack/wordpress"
 
-cd ${BASEDIR}/unpack/
+cd "${BASEDIR}/unpack/"
 echo "==============================================================================="
 
 if [ -e ${BASEDIR}/downloads/wordpress.zip ]; then
     echo "* Unpacking Wordpress"
-    unzip -q ${BASEDIR}/downloads/wordpress.zip
-    rm -f ${BASEDIR}/downloads/wordpress.zip
+    unzip -q "${BASEDIR}/downloads/wordpress.zip"
+    rm -f "${BASEDIR}/downloads/wordpress.zip"
 else
-    echo "* No ${BASEDIR}/downloads/wordpress.zip can't extract"
+    echo "* No ${BASEDIR}/downloads/wordpress.zip exists, can't extract"
 fi
 
-cd ${BASEDIR}/unpack/plugins
+cd "${BASEDIR}/unpack/plugins"
 
 echo "* Unpacking plugins"
-unzip -q ${BASEDIR}/downloads/\*.zip
+unzip -q "${BASEDIR}/downloads/\*.zip"
 
 
 echo "* Upgrading Wordpress"
-\cp -a ${BASEDIR}/unpack/wordpress/* ${SITEDIR}/
+\cp -a "${BASEDIR}/unpack/wordpress/*" "${SITEDIR}/"
 
 echo "* Upgrading plugins"
-\cp -a ${BASEDIR}/unpack/plugins/* ${SITEDIR}/wp-content/plugins/
+\cp -a "${BASEDIR}/unpack/plugins/*" "${SITEDIR}/wp-content/plugins/"
 
 echo "==============================================================================="
 echo "Upgrading is complete! You will want to visit your site's wp-admin URL to"
