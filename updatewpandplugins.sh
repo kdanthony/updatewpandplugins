@@ -57,17 +57,19 @@ echo "==========================================================================
 echo "Starting update process for ${SITEDIR}"
 echo "==============================================================================="
 
-if [ -d ${BASEDIR}/downloads ]; then
+if [ -d "${BASEDIR}/downloads" ]; then
     echo "* Cleaning existing download directory"
-    rm -rf "${BASEDIR}/downloads/*"
+    rm -rf "${BASEDIR}/downloads"
+    mkdir "${BASEDIR}/downloads"
 else
     echo "* No download directory exists, creating it"
     mkdir "${BASEDIR}/downloads"
 fi
 
-if [ -d ${BASEDIR}/unpack ]; then
+if [ -d "${BASEDIR}/unpack" ]; then
     echo "* Cleaning existing unpack directory"
-    rm -rf "${BASEDIR}/unpack/*"
+    rm -rf "${BASEDIR}/unpack"
+    mkdir "${BASEDIR}/unpack"
 else
     echo "* No unpack directory exists, creating it"
     mkdir "${BASEDIR}/unpack"
@@ -98,7 +100,7 @@ echo "==========================================================================
 
 if [ -e ${BASEDIR}/downloads/wordpress.zip ]; then
     echo "* Unpacking Wordpress"
-    unzip -q "${BASEDIR}/downloads/wordpress.zip"
+    unzip "${BASEDIR}/downloads/wordpress.zip"
     rm -f "${BASEDIR}/downloads/wordpress.zip"
 else
     echo "* No ${BASEDIR}/downloads/wordpress.zip exists, can't extract"
@@ -107,14 +109,14 @@ fi
 cd "${BASEDIR}/unpack/plugins"
 
 echo "* Unpacking plugins"
-unzip -q "${BASEDIR}/downloads/\*.zip"
+unzip "${BASEDIR}/downloads/*.zip"
 
 
 echo "* Upgrading Wordpress"
-\cp -a "${BASEDIR}/unpack/wordpress/*" "${SITEDIR}/"
+\cp -a "${BASEDIR}/unpack/wordpress"/* "${SITEDIR}/"
 
 echo "* Upgrading plugins"
-\cp -a "${BASEDIR}/unpack/plugins/*" "${SITEDIR}/wp-content/plugins/"
+\cp -a "${BASEDIR}/unpack/plugins"/* "${SITEDIR}/wp-content/plugins/"
 
 echo "==============================================================================="
 echo "Upgrading is complete! You will want to visit your site's wp-admin URL to"
