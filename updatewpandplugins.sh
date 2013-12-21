@@ -42,14 +42,29 @@ if [ ! $1 ]; then
     scriptusage
     exit
 else
-    SITEDIR=$1
+    SITEDIR=$*
 fi
 
 
 # ------------
 
-if [ ! -f ${SITEDIR}/wp-config.php ]; then
+if [ ! -f "${SITEDIR}/wp-config.php" ]; then
     echo "ERROR: There does not appear to be a Wordpress installation in ${SITEDIR}"
+    exit 1
+fi
+
+echo "==============================================================================="
+echo "  Upgrading Wordpress and all plugins for:"
+echo "             ${SITEDIR}"
+echo "==============================================================================="
+echo
+echo " ******** THIS WILL OVERWRITE ALL DEFAULT WORDPRESS AND PLUGIN FILES *********"
+echo
+read -p "Do you wish to continue? [y/n]:  " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "ERROR: Upgrade cancelled"
     exit 1
 fi
 
@@ -82,7 +97,7 @@ echo "* Downloading Plugins";
 
 cd "${BASEDIR}/downloads/"
 
-for PLUGINNAME in `find ${SITEDIR}/wp-content/plugins/ -mindepth 1 -maxdepth 1 -xtype d | sed -e 's/.*plugins\///g'`; do
+for PLUGINNAME in `find "${SITEDIR}/wp-content/plugins/" -mindepth 1 -maxdepth 1 -xtype d | sed -e 's/.*plugins\///g'`; do
     echo ${PLUGINNAME}
     curl --progress-bar -O ${WPPLUGINURL}${PLUGINNAME}.zip
 done
@@ -98,9 +113,9 @@ mkdir "${BASEDIR}/unpack/wordpress"
 cd "${BASEDIR}/unpack/"
 echo "==============================================================================="
 
-if [ -e ${BASEDIR}/downloads/wordpress.zip ]; then
+if [ -e "${BASEDIR}/downloads/wordpress.zip" ]; then
     echo "* Unpacking Wordpress"
-    unzip "${BASEDIR}/downloads/wordpress.zip"
+    unzip -q "${BASEDIR}/downloads/wordpress.zip"
     rm -f "${BASEDIR}/downloads/wordpress.zip"
 else
     echo "* No ${BASEDIR}/downloads/wordpress.zip exists, can't extract"
@@ -109,7 +124,7 @@ fi
 cd "${BASEDIR}/unpack/plugins"
 
 echo "* Unpacking plugins"
-unzip "${BASEDIR}/downloads/*.zip"
+unzip -q "${BASEDIR}/downloads/*.zip"
 
 
 echo "* Upgrading Wordpress"
